@@ -76,9 +76,3 @@ We will examine one of them on the following steps:
 under "client/src/contract" directory of this project and paste in the box.
 8. Click the "Verify and Publish" button and once it is completed the factory contract
 is verified and published on-chain.
-
-## Acknowledgements
-* Daniel Bound (s3719027@student.rmit.edu.au)
-* Michael Lyberopoulos (s3787260@student.rmit.edu.au)
-* Tiana Chimbaikar (s3908853@student.rmit.edu.au)
-* Jun Cao (s3712883@student.rmit.edu.au)# nft-minter
