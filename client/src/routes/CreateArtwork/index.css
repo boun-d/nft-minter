@@ -1,0 +1,141 @@
+
+.button-primary {
+    background-color: #001b2e !important;
+    border-color: #001b2e !important;
+    color: white !important;
+}
+
+.button-secondary {
+    background-color: #87949d !important;
+    border-color: #87949d !important;
+    color: white !important;
+}
+
+.layer-header {
+    padding: 0 2vw;
+    /* line-height: 5vw; */
+    font-size: 1.4vw;
+    background-color: rgb(6,26,44);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.layer-header .ant-form-item:last-child {
+    margin-bottom: 0;
+}
+
+/*
+.layer-header__icon {
+    font-size: 28px !important;
+}
+*/
+
+.layer-name {
+    font-size: 1.2vw;
+}
+
+.layer-img {
+    position: relative;
+    border: 3px solid transparent;
+    border-radius: 3px;
+    padding: 16px;
+    margin: -16px;
+}
+/* .layer-img:hover {
+    border-color: rgb(6,26,44);
+} */
+.layer-img:hover .layer-img__button {
+    visibility: visible;
+}
+.layer-img__button {
+    position: absolute;
+    top: 20px;
+    right: 16px;
+    visibility: hidden;
+}
+.layer-img__button .anticon {
+    font-size: 28px !important;
+}
+
+
+@-webkit-keyframes spin {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+.loading-img {
+    margin-top: 40px;
+    animation: spin 1.2s linear infinite;
+}
+
+.section-break {
+    padding: 2vw;
+
+}
+
+.headers-navy {
+    line-height: 5vw;
+    font-size: 1.4vw;
+    background-color: rgb(6, 26, 44);
+    color: white;
+    text-align: center;
+}
+
+.headers-box {
+    border: 2px solid rgb(6, 26, 44);
+    margin: 2vw auto;
+}
+
+.upload-image-counter {
+    font-size: 1.2vw;
+    color: rgb(6, 26, 44);
+    font-weight: 300;
+}
+
+/* Overriding css Library */
+
+.ant-upload-picture-card-wrapper,
+.ant-upload.ant-upload-select-picture-card {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.ant-col {
+    width: 35%;
+}
+
+.ant-btn-round.ant-btn-lg {
+    /* height: 2.5vw; */
+    height: auto;
+    padding: 0.3vw 1vw;
+    font-size: 1vw;
+}
+
+.ant-btn-round {
+    height: 2.5vw;
+    padding: 0.3vw 1vw;
+    font-size: 1vw;
+}
+
+.ant-input-lg {
+    /* padding: 6.5px 11px; */
+    font-size: 1vw;
+}
+
+.ant-form-item-label > label {
+    font-size: 1.2vw;
+}

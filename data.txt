@@ -1,0 +1,11 @@
+DATA MANAGEMENT INFORMATION
+
+Type of DB used: MongoDB
+Hosted: MongoDB Atlas
+
+Username: admin
+Password: 8mT3mzz53T1JbjeL
+
+Database name: nft-minter-table
+
+Connection string: mongodb+srv://admin:8mT3mzz53T1JbjeL@nft-minter-table.s8p2yuy.mongodb.net/test?retryWrites=true&w=majority
