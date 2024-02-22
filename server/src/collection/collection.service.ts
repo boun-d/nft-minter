@@ -11,9 +11,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Model } from 'mongoose';
 
-const axios = require('axios');
-const FormData = require('form-data');
-
 import {
   NFTS_DIR_NAME,
   UPLOADED_IMAGES_DIR_NAME,
@@ -27,9 +24,10 @@ import {
 } from './interfaces/collection.interface';
 import { copyDirSync, emptyDirSync } from './utils/file-system-utils';
 import { ConfigService } from '@nestjs/config';
+import { Readable } from 'stream';
 
 const { Worker, isMainThread } = require('worker_threads');
-const dbQueryFilter = '-__v -_id';
+const DB_QUERY_FILTER = '-__v -_id';
 
 @Injectable()
 export class CollectionService {
@@ -53,11 +51,11 @@ export class CollectionService {
     if (!!publicAddress) {
       query['collectionOwner'] = { $eq: publicAddress };
     }
-    return this.collectionModel.find(query).select(dbQueryFilter);
+    return this.collectionModel.find(query).select(DB_QUERY_FILTER);
   }
 
   async findOne(collectionId: string): Promise<Collection | undefined> {
-    return this.collectionModel.findOne({ collectionId }).select(dbQueryFilter);
+    return this.collectionModel.findOne({ collectionId }).select(DB_QUERY_FILTER);
   }
 
   async updateCollectionStatus(
@@ -229,35 +227,27 @@ export class CollectionService {
     image: Express.Multer.File,
     key: 'backgroundImageDirectoryHash' | 'gifDirectoryHash',
   ) {
-    const formData = new FormData();
-    formData.append('file', Buffer.from(image.buffer));
+    const pinataSDK = require('@pinata/sdk');
+    const pinataJWTKey = this.config.get('IPFS_GATEWAY_SECRET');
+    const pinata = new pinataSDK({ pinataJWTKey });
 
-    const secret = this.config.get('IPFS_GATEWAY_SECRET');
-    const auth = 'Bearer ' + secret;
-
-    const result = await axios.post(
-      'https://api.pinata.cloud/pinning/pinFileToIPFS',
-      formData,
+    const result = await pinata.pinFileToIPFS(
+      Readable.from(Buffer.from(image.buffer)),
       {
-        maxBodyLength: Infinity,
-        headers: {
-          ...formData.getHeaders(),
-          Authorization: auth,
-        },
+        pinataMetadata: { name: collectionId },
       },
     );
-    if (result.status === 200) {
-      await this.collectionModel
-        .findOneAndUpdate(
-          {
-            collectionId,
-          },
-          { [key]: result.data.Hash },
-        )
-        .exec();
-      return true;
-    }
-    return false;
+
+    if (!result.IpfsHash) return false;
+    await this.collectionModel
+      .findOneAndUpdate(
+        {
+          collectionId,
+        },
+        { [key]: result.IpfsHash },
+      )
+      .exec();
+    return true;
   }
 
   async setCollectionWebsiteLink(
@@ -439,7 +429,7 @@ export class CollectionService {
         ipfsGatewaySecret: this.config.get('IPFS_GATEWAY_SECRET'),
       },
     });
-    
+
     worker.on('error', () => {
       this.updateCollectionStatus(collectionId, CollectionStatus.PROCESSED);
     });
