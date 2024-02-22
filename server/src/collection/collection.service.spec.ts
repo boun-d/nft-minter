@@ -277,7 +277,7 @@ describe('CollectionService', () => {
       );
 
       expect(axiosPostSpy).toHaveBeenCalledWith(
-        'https://ipfs.infura.io:5001/api/v0/add',
+        'https://api.pinata.cloud/pinning/pinFileToIPFS',
         expect.objectContaining({ dataSize: 0 }),
         expect.objectContaining({
           params: {

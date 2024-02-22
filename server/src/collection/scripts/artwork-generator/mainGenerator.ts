@@ -39,7 +39,7 @@ const mainGenerator = async (version) => {
           nftL.size.width,
           nftL.size.height,
         );
-        fs.writeFileSync(path.join(__dirname, '../..', NFTS_DIR_NAME, `${i}.png`), canvas.toBuffer('image/png'));
+        fs.writeFileSync(path.join(__dirname, '../..', NFTS_DIR_NAME, `images/${i}`), canvas.toBuffer('image/png'));
       }
     }
     detailsCreator(i);

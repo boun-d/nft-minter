@@ -2,23 +2,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { updateJSONFile } from './updateJSONFile';
 
-const FormData = require('form-data');
-const axios = require('axios');
-
-const getHashFromResponseData = (data) => {
-  const result = data?.substring(
-    data?.lastIndexOf('{'),
-    data?.lastIndexOf('}') + 1,
-  );
-  return JSON.parse(result)?.Hash;
-};
-
 export const syncFilesWithIPFS = async (
   collectionId,
   collectionSize,
   collectionName,
-  ipfsProjectId,
-  ipfsProjectSecret
+  ipfsProjectSecret,
 ) => {
   const filesDirectory = path.join(
     __dirname,
@@ -30,40 +18,23 @@ export const syncFilesWithIPFS = async (
   if (!fs.existsSync(filesDirectory)) return false;
   if (!fs.readdirSync(filesDirectory).length) return false;
 
-  const projectId = ipfsProjectId;
-  const projectSecret = ipfsProjectSecret;
-  const auth =
-    'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
+  const pinataSDK = require('@pinata/sdk');
+  const pinata = new pinataSDK({ pinataJWTKey: ipfsProjectSecret });
 
-  const imagesFormData = new FormData();
-  for (let i = 1; i <= collectionSize; i++) {
-    imagesFormData.append(
-      'file',
-      fs.createReadStream(path.join(filesDirectory, `${i}.png`)),
-      { filename: `${i}`, contentType: 'image/png' },
-    );
-  }
-  const imageUploadResult = await axios.post(
-    'https://ipfs.infura.io:5001/api/v0/add',
-    imagesFormData,
-    {
-      params: {
-        'wrap-with-directory': true,
-        'cid-version': 1,
-        has: 'sha2-256',
+  const imageUploadResult = await pinata
+    .pinFromFS(filesDirectory + '/images', {
+      pinataMetadata: {
+        name: collectionId + '_images',
       },
-      maxBodyLength: Infinity,
-      headers: {
-        ...imagesFormData.getHeaders(),
-        Authorization: auth,
+      pinataOptions: {
+        cidVersion: 0,
       },
-    },
-  );
+    })
+    .catch(() => null);
 
-  if (!imageUploadResult.data) return false;
-  const imagesDirectoryHash = getHashFromResponseData(imageUploadResult.data);
+  const imagesDirectoryHash = imageUploadResult?.IpfsHash;
+  if (!imagesDirectoryHash) return false;
 
-  const jsonFilesFormData = new FormData();
   for (let i = 1; i <= collectionSize; i++) {
     const result = updateJSONFile(
       i,
@@ -72,36 +43,21 @@ export const syncFilesWithIPFS = async (
       imagesDirectoryHash,
     );
     if (!result) return false;
-
-    jsonFilesFormData.append(
-      'file',
-      fs.createReadStream(path.join(filesDirectory, `${i}.json`)),
-      { filename: `${i}`, contentType: 'application/json' },
-    );
   }
 
-  const config = {
-    params: {
-      'wrap-with-directory': true,
-      'cid-version': 1,
-      has: 'sha2-256',
-    },
-    maxBodyLength: Infinity,
-    headers: {
-      ...jsonFilesFormData.getHeaders(),
-      Authorization: auth,
-    },
-  };
-  const jsonFilesUploadResult = await axios.post(
-    'https://ipfs.infura.io:5001/api/v0/add',
-    jsonFilesFormData,
-    config,
-  );
+  const jsonFilesUploadResult = await pinata
+    .pinFromFS(filesDirectory + '/jsons', {
+      pinataMetadata: {
+        name: collectionId + '_jsons',
+      },
+      pinataOptions: {
+        cidVersion: 0,
+      },
+    })
+    .catch(() => null);
 
-  if (!jsonFilesUploadResult.data) return false;
-  const jsonFilesDirectoryHash = getHashFromResponseData(
-    jsonFilesUploadResult.data,
-  );
+  const jsonFilesDirectoryHash = jsonFilesUploadResult?.IpfsHash;
+  if (!jsonFilesDirectoryHash) return false;
 
   return {
     imagesDirectoryHash,

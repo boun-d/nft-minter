@@ -22,29 +22,30 @@ import { User } from 'context/UserContext'
 function App() {
     const [loading, setLoading] = useState<boolean>(true)
     const [publicAddress, setPublicAddress] = useState<string | undefined>()
-    const [currentUser, setCurrentUser] = useState<User>();
+    const [currentUser, setCurrentUser] = useState<User>()
 
     const ethereum = (window as any).ethereum
-    ethereum?.on('accountsChanged', (accounts) =>
+    ethereum?.on('accountsChanged', (accounts) => {
         setPublicAddress(() => accounts[0] || '')
-    )
+    })
 
     const setUser = (publicAddress: string) => {
-        const { authenticated } = checkAuth(publicAddress);
-        if (!authenticated) return;
+        const { authenticated } = checkAuth(publicAddress)
+        if (!authenticated) return
 
         const token = localStorage.getItem('token')
         const decoded = decodeToken(token || '')
         if (!decoded) {
-            return;
+            return
         }
-        setCurrentUser(decoded.user);
+        setCurrentUser(decoded.user)
     }
 
     useEffect(() => {
         requestPublicAddress()
             .then((address) => {
-                setUser(address);
+                console.log(address)
+                setUser(address)
                 setPublicAddress(() => address || '')
             })
             .finally(() => setLoading(() => false))
@@ -55,10 +56,11 @@ function App() {
     if (loading) {
         return <LoadingPage />
     }
-
     return (
         <QueryClientProvider {...{ client }}>
-            <UserContext.Provider value={{ publicAddress, currentUser, setCurrentUser }}>
+            <UserContext.Provider
+                value={{ publicAddress, currentUser, setCurrentUser }}
+            >
                 <BrowserRouter>
                     <Routes>
                         <Route path="/" element={<Login />} />
@@ -71,12 +73,20 @@ function App() {
                         <Route
                             path="/~/preview-artwork/:collectionId"
                             element={
-                                <PrivateRoute element={PreviewArtwork} roles={['COLLECTION_OWNER']}/>
+                                <PrivateRoute
+                                    element={PreviewArtwork}
+                                    roles={['COLLECTION_OWNER']}
+                                />
                             }
                         />
                         <Route
                             path="/~/collections"
-                            element={<PrivateRoute element={Collections} roles={['ADMIN', 'COLLECTION_OWNER']}/>}
+                            element={
+                                <PrivateRoute
+                                    element={Collections}
+                                    roles={['ADMIN', 'COLLECTION_OWNER']}
+                                />
+                            }
                         />
                         <Route
                             path="/collection/:collectionId"

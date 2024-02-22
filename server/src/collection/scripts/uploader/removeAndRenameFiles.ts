@@ -23,15 +23,24 @@ export async function removeAndRenameFiles(
 
   let nftNumber = 1;
   for (let i = 1; i <= collectionSize; i++) {
-    const currFile = path.join(filesDirectory, `${i}`);
-    if (!fs.existsSync(currFile + '.png') || !fs.existsSync(currFile + '.json')) continue;
+    if (
+      !fs.existsSync(path.join(filesDirectory, `images/${i}`)) ||
+      !fs.existsSync(path.join(filesDirectory, `jsons/${i}`))
+    )
+      continue;
 
     if (numbersToRemove.includes(i)) {
-      fs.unlinkSync(currFile + '.png')
-      fs.unlinkSync(currFile + '.json')
+      fs.unlinkSync(path.join(filesDirectory, `images/${i}`));
+      fs.unlinkSync(path.join(filesDirectory, `jsons/${i}`));
     } else {
-      fs.renameSync(currFile + '.png', path.join(filesDirectory, `${nftNumber}.png`))
-      fs.renameSync(currFile + '.json', path.join(filesDirectory, `${nftNumber}.json`))
+      fs.renameSync(
+        path.join(filesDirectory, `images/${i}`),
+        path.join(filesDirectory, `images/${nftNumber}`),
+      );
+      fs.renameSync(
+        path.join(filesDirectory, `jsons/${i}`),
+        path.join(filesDirectory, `jsons/${nftNumber}`),
+      );
       nftNumber++;
     }
   }

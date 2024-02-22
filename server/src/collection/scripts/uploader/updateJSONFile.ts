@@ -12,7 +12,7 @@ export async function updateJSONFile(
     '../../../..',
     'public',
     collectionId,
-    `${i}.json`,
+    `jsons/${i}`,
   );
   if (!fs.existsSync(jsonFile)) return false;
 

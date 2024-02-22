@@ -7,10 +7,11 @@ import { NFTS_DIR_NAME } from 'src/collection/constants';
 const { workerData } = require('worker_threads');
 
 async function generateCollection(collectionSize) {
-  const nftsDir = join(__dirname, '../..', NFTS_DIR_NAME);
-  if (!existsSync(nftsDir)) {
-    mkdirSync(nftsDir, { recursive: true });
-  }
+  const nftImagesDirectory = join(__dirname, '../..', NFTS_DIR_NAME, 'images');
+  const nftJsonsDirectory = join(__dirname, '../..', NFTS_DIR_NAME, 'jsons');
+
+  if (!existsSync(nftImagesDirectory)) mkdirSync(nftImagesDirectory, { recursive: true });
+  if (!existsSync(nftJsonsDirectory)) mkdirSync(nftJsonsDirectory, { recursive: true });
 
   readParts();
   await mainGenerator(collectionSize);

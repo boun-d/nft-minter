@@ -67,7 +67,7 @@ export const InnerPreviewArtwork: React.FC<Props> = ({
 
     const handleShowJSON = (number: number) => {
         window.open(
-            `${process.env.REACT_APP_INFURA_IPFS_PROJECT_URL}/${data?.jsonFilesDirectoryHash}/${number}`
+            `${process.env.REACT_APP_IPFS_GATEWAY_URL}/${data?.jsonFilesDirectoryHash}/${number}`
         )
     }
 
@@ -146,8 +146,8 @@ export const InnerPreviewArtwork: React.FC<Props> = ({
                                         className="image"
                                         src={
                                             collectionStatus === 'PROCESSED'
-                                                ? `${process.env.REACT_APP_SERVER_URL}/${collectionId}/${number}.png`
-                                                : `${process.env.REACT_APP_INFURA_IPFS_PROJECT_URL}/${data?.imagesDirectoryHash}/${number}`
+                                                ? `${process.env.REACT_APP_SERVER_URL}/${collectionId}/images/${number}`
+                                                : `${process.env.REACT_APP_IPFS_GATEWAY_URL}/${data?.imagesDirectoryHash}/${number}`
                                         }
                                         style={{
                                             width: '12.85vw',

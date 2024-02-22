@@ -8,8 +8,7 @@ export async function mainUploader(
   collectionSize: number,
   collectionName: string,
   numbersToRemove: number[],
-  ipfsProjectId: string,
-  ipfsProjectSecret: string
+  ipfsGatewaySecret: string
 ) {
   const numberOfImagesBeingRemoved = (numbersToRemove || []).length;
 
@@ -24,8 +23,7 @@ export async function mainUploader(
     collectionId,
     collectionSize - numberOfImagesBeingRemoved,
     collectionName,
-    ipfsProjectId,
-    ipfsProjectSecret
+    ipfsGatewaySecret
   );
 
   parentPort.postMessage(hashes);
@@ -37,6 +35,5 @@ mainUploader(
   workerData.collectionSize,
   workerData.collectionName,
   workerData.numbersToRemove,
-  workerData.ipfsProjectId,
-  workerData.ipfsProjectSecret
+  workerData.ipfsGatewaySecret
 );

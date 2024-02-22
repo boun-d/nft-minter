@@ -105,7 +105,7 @@ describe('MintingPage', () => {
 
         const ImageNode = wrapper.find('.gif').find('img')
         expect(ImageNode.length).toBe(1)
-        expect(ImageNode.getElement().props.src).toBe(`https://nft-minter.infura-ipfs.io/ipfs/${mockData.gifDirectoryHash}`)
+        expect(ImageNode.getElement().props.src).toBe(`https://mock-gateway/ipfs/${mockData.gifDirectoryHash}`)
     })
     it('should render correct nft-counter of data', () => {
         const wrapper = shallow(<InnerMintingPage data={mockData} />)

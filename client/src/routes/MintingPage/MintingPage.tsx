@@ -110,7 +110,7 @@ export const InnerMintingPage: React.FC<InnerMintingPageProps> = ({ data }) => {
                 <img
                     src={
                         gifDirectoryHash
-                            ? `${process.env.REACT_APP_INFURA_IPFS_PROJECT_URL}/${gifDirectoryHash}`
+                            ? `${process.env.REACT_APP_IPFS_GATEWAY_URL}/${gifDirectoryHash}`
                             : placeholderGif
                     }
                 />
@@ -178,7 +178,7 @@ export const MintingPageContainer: React.FC = () => {
         } else {
             document.title = data.collectionName
             if (!!data.backgroundImageDirectoryHash) {
-                const imageUrl = `url(${process.env.REACT_APP_INFURA_IPFS_PROJECT_URL}/${data.backgroundImageDirectoryHash})`
+                const imageUrl = `url(${process.env.REACT_APP_IPFS_GATEWAY_URL}/${data.backgroundImageDirectoryHash})`
                 document.body.style.backgroundImage = imageUrl
                 document.body.style.backgroundPosition = 'center'
                 document.body.style.backgroundSize = 'cover'

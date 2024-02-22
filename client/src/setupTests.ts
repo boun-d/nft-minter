@@ -43,7 +43,7 @@ const precessEnvMock = (function () {
             REACT_APP_DNS: 'https://some-dns-site.com',
             REACT_APP_SERVER_URL: 'http://localhost:8080',
             REACT_APP_CLIENT_URL: 'https://some-site.com',
-            REACT_APP_INFURA_IPFS_PROJECT_URL: 'https://nft-minter.infura-ipfs.io/ipfs',
+            REACT_APP_IPFS_GATEWAY_URL: 'https://mock-gateway/ipfs',
         }
     }
 })()

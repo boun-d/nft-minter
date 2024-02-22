@@ -2,19 +2,18 @@
 
 ## Prerequisites
 
-* An infura.io dedicated gateway (detailed [here](https://docs.infura.io/infura/networks/ipfs/how-to/access-ipfs-content/dedicated-gateways))
+* A pinata.cloud dedicated gateway (detailed [here](https://docs.pinata.cloud/gateways/dedicated-ipfs-gateways))
 * MongoDB database
 * Docker installed on local machine
 * .env.dev AND .env.prod files with the following environment variables:
 	* `REACT_APP_DNS` this will be your website name when deployed in production environment
 	* `REACT_APP_SERVER_URL` e.g. http://localhost:8080
-	* `REACT_APP_INFURA_IPFS_PROJECT_URL` in the format `https://<subdomain>.infura-ipfs.io/ipfs` where subdomain is the name provided when creating the dedicated gateway
+	* `REACT_APP_IPFS_GATEWAY_URL` in the format `https://<subdomain>.mypinata.cloud/ipfs` where subdomain is the name provided when creating the dedicated gateway via Pinata
 	* `REACT_APP_FACTORY_CONTRACT_ADDRESS` e.g. `0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA`
 	* `JWT_EXPIRY` e.g. `43200s` for a twelve hour expiry
 	* `JWT_SECRET` e.g. `someSecretToKeepTokensSafe99!`
 	* `MONGODB_CONNECTION_STRING` e.g. `mongodb+srv://...` (this will be provided when creating the database)
-	* `IPFS_PROJECT_ID` - infura project ID
-	* `IPFS_PROJECT_SECRET` - infura project secret
+	* `IPFS_GATEWAY_SECRET` - JWT to access private Pinata dedicated IPFS gateway
 
 	
 ## Usage

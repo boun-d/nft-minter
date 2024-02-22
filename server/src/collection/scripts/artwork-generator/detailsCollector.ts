@@ -25,11 +25,11 @@ export const dirGen = async () => {
       att.push(temp);
     });
     data[i].attributes = att;
-    const dir = path.join(__dirname, '../..', NFTS_DIR_NAME);
+    const dir = path.join(__dirname, '../..', NFTS_DIR_NAME, 'jsons');
     fs.stat(`${dir}/${i + 1}`, (err) => {
       if (err == null || err.code === 'ENOENT') {
         fs.writeFileSync(
-          `${dir}/${edition}.json`,
+          `${dir}/${edition}`,
           JSON.stringify(data[i], null, 2),
         );
       }

@@ -232,20 +232,13 @@ export class CollectionService {
     const formData = new FormData();
     formData.append('file', Buffer.from(image.buffer));
 
-    const projectId = this.config.get('IPFS_PROJECT_ID');
-    const projectSecret = this.config.get('IPFS_PROJECT_SECRET');
-    const auth =
-      'Basic ' +
-      Buffer.from(projectId + ':' + projectSecret).toString('base64');
+    const secret = this.config.get('IPFS_GATEWAY_SECRET');
+    const auth = 'Bearer ' + secret;
 
     const result = await axios.post(
-      'https://ipfs.infura.io:5001/api/v0/add',
+      'https://api.pinata.cloud/pinning/pinFileToIPFS',
       formData,
       {
-        params: {
-          'cid-version': 1,
-          has: 'sha2-256',
-        },
         maxBodyLength: Infinity,
         headers: {
           ...formData.getHeaders(),
@@ -432,56 +425,55 @@ export class CollectionService {
 
   @DefineJob({ name: 'SYNC_FILES_WITH_IPFS', concurrency: 1 })
   async syncFilesWithIPFSJob(job: Job, done: () => void) {
+    if (!isMainThread) return;
+
     const { collectionId, collectionSize, collectionName, numbersToRemove } =
       job.attrs.data;
 
-    if (isMainThread) {
-      const worker = new Worker(path.join(__dirname, 'scripts/uploader/main'), {
-        workerData: {
-          collectionId,
-          collectionSize,
-          collectionName,
-          numbersToRemove,
-          ipfsProjectId: this.config.get('IPFS_PROJECT_ID'),
-          ipfsProjectSecret: this.config.get('IPFS_PROJECT_SECRET')
-        },
-      });
-      worker.on('error', () => {
+    const worker = new Worker(path.join(__dirname, 'scripts/uploader/main'), {
+      workerData: {
+        collectionId,
+        collectionSize,
+        collectionName,
+        numbersToRemove,
+        ipfsGatewaySecret: this.config.get('IPFS_GATEWAY_SECRET'),
+      },
+    });
+    
+    worker.on('error', () => {
+      this.updateCollectionStatus(collectionId, CollectionStatus.PROCESSED);
+    });
+
+    worker.on('message', async (result) => {
+      if (!result) return;
+      await this.saveIPFSDirectoryHashes(
+        collectionId,
+        result.imagesDirectoryHash,
+        result.jsonFilesDirectoryHash,
+      );
+    });
+
+    worker.on('exit', async (code) => {
+      if (code !== 0) {
+        console.error(`Worker stopped with exit code ${code}`);
         this.updateCollectionStatus(collectionId, CollectionStatus.PROCESSED);
-      });
-      worker.on('message', async (result) => {
-        if (!result) return;
-        await this.saveIPFSDirectoryHashes(
+      } else {
+        const folderToDelete = path.join(
+          __dirname,
+          '../..',
+          'public',
           collectionId,
-          result.imagesDirectoryHash,
-          result.jsonFilesDirectoryHash,
         );
-      });
-      worker.on('exit', async (code) => {
-        if (code !== 0) {
-          console.error(`Worker stopped with exit code ${code}`);
-          this.updateCollectionStatus(collectionId, CollectionStatus.PROCESSED);
-        } else {
-          const folderToDelete = path.join(
-            __dirname,
-            '../..',
-            'public',
-            collectionId,
-          );
-          emptyDirSync(folderToDelete);
-          fs.rmdirSync(folderToDelete);
-          await this.decreaseCollectionSize(
-            collectionId,
-            numbersToRemove.length,
-          );
-          await this.updateCollectionStatus(
-            collectionId,
-            CollectionStatus.UPLOADED,
-          );
-        }
-        await job.remove();
-        done();
-      });
-    }
+        emptyDirSync(folderToDelete);
+        fs.rmdirSync(folderToDelete);
+        await this.decreaseCollectionSize(collectionId, numbersToRemove.length);
+        await this.updateCollectionStatus(
+          collectionId,
+          CollectionStatus.UPLOADED,
+        );
+      }
+      await job.remove();
+      done();
+    });
   }
 }
