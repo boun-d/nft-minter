@@ -1,5 +1,6 @@
 # NFT Art Generator and Minter project
 
+
 ## Prerequisites
 
 * A pinata.cloud dedicated gateway (detailed [here](https://docs.pinata.cloud/gateways/dedicated-ipfs-gateways))
@@ -14,6 +15,9 @@
 	* `JWT_SECRET` e.g. `someSecretToKeepTokensSafe99!`
 	* `MONGODB_CONNECTION_STRING` e.g. `mongodb+srv://...` (this will be provided when creating the database)
 	* `IPFS_GATEWAY_SECRET` - JWT to access private Pinata dedicated IPFS gateway
+
+## Demo
+[<img width="833" alt="Screenshot 2024-02-22 at 10 06 45 pm" src="https://github.com/boun-d/nft-minter/assets/91413001/8a0b736c-033c-4171-b207-5341662bd3b6">](https://1drv.ms/v/c/c62fb2fd11cf312b/IQOxEUPV4lvpRrz4jZ8k7e0qARYU1mWlsf0Km4E6q22yb-A)
 
 	
 ## Usage
