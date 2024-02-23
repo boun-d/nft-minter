@@ -19,7 +19,9 @@
 ## Demo
 [<img width="833" alt="Screenshot 2024-02-22 at 10 06 45 pm" src="https://github.com/boun-d/nft-minter/assets/91413001/8a0b736c-033c-4171-b207-5341662bd3b6">](https://1drv.ms/v/c/c62fb2fd11cf312b/IQOxEUPV4lvpRrz4jZ8k7e0qARYU1mWlsf0Km4E6q22yb-A)
 
-	
+## Flow
+<img width="1153" alt="flow" src="https://github.com/boun-d/nft-minter/assets/91413001/4c588b1f-6af9-4bfe-ba5b-938f40839219">
+
 ## Usage
 
 ### Running development environment locally
